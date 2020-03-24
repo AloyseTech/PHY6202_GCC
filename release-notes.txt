@@ -1,0 +1,269 @@
+release notes
+
+project: PHY62XX SDK
+
+=======================================================================
+version: PHY62XX_SDK_1.0.2
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.0.2
+
+升级内容:
+1） BLE-Uart 休眠模式Bug修复
+2） 手环例程电池电压计算公式调整，心率测量时间调整，心率测量算法库更新
+3） lib更新：未配置advData，可以发空广播。
+4） lib更新：llSetupRejectInd中，需要填写拒绝原因
+5） lib更新：llSetupDirectedAdvEvt0，超过1.28s异常分支，需要调用LL_Reset将参数复位。
+6） lib更新：针对LL/SEC/SLA/BI-05-C的改动，start enc过程非法包检查。
+
+	
+=======================================================================
+version: PHY62XX_SDK_1.0.3
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.0.3
+
+升级内容:
+1） standardiz GPIO APIs, export fmux enable and disable function
+2） add driver KeyScan 
+3） fix adv PDU length bug 
+4） lib更新：调整连接参数，优化rc32K tracking 算法
+5） lib更新：唤醒后enable flash，应用层可以对flash进行读写操作。
+
+	
+=======================================================================
+version: PHY62XX_SDK_1.1.0
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.0
+
+升级内容:
+1） add new example bleSmartPeripheral for  ble slave <->peripheral application
+2） add OTA support
+3） lib更新：优化RFPHY setting
+4） lib更新：优化连接参数，提供兼容性。
+	
+=======================================================================
+version: PHY62XX_SDK_1.1.1
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.1
+
+升级内容:
+1） add miss file ota.c ota.h
+
+=======================================================================
+version: PHY62XX_SDK_1.1.2
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.2
+
+升级内容:
+1） lib更新：优化RFPHY setting
+2） lib更新：优化连接参数，提供兼容性。
+
+=======================================================================
+version: PHY62XX_SDK_1.1.3
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.3
+
+升级内容:
+1） wrist 工程中加入OTAservice
+2） 加入qdec driver
+3） lib 更新：优化了slave 端的conn term的处理流程
+4） lib 更新：解决了NO_SLEEP_MODE 模式下的RF TX Power 的配置问题
+5） lib 更新：RF FREQOFF 现在可以通过直接修改全局变量g_rfPhyFreqOffset 来校准
+
+
+=======================================================================
+version: PHY62XX_SDK_1.1.4
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.4
+
+升级内容:
+1)------------------------------------------------------------------
+	source code for TFT UI
+	TFT UI related code and project file 
+	TFT LCD driver update
+	add a function hal_spi_init
+
+	wrist project update:
+		1.TFT screen can work in PWR_MODE_SLEEP
+		2.can configure system clock @16M and @48M
+		3.fix compile issue when use config DISP_OLED
+		4.wrist demo use 48MHz system clock
+
+2)------------------------------------------------------------------
+	增加1个函数接口hal_adc_clock_config，用于设置ADC的采集速率；
+	修改2个函数名称；
+ 	modified adc sampled data, remove 1st and 2nd raw data. return from 3rd samples
+	add hal_adc_load_calibration_value
+
+3)------------------------------------------------------------------
+	rflib improvment for HCLK=48MDLL mode
+	1. add WaitRTCCount() in common.c
+	2. comment hal_system_init in app_wakeup_process
+	3. add SYS_CLK_DLL_48M option
+	4. reduce LL_ADV interval by call llSetupUndirectedAdvEvt1 in LL_IRQHandler1
+	5. reduce Rx_timout in ADV trx mode
+	6. reduce delay time in hal_system_init
+	7. increase the wakeup_advance setting to improve 48M dll rf performance 
+
+4)------------------------------------------------------------------
+	Add gpio example.
+	optimize gpio_demo.c gpio.c
+	comment gpio pull down in hal_gpionin_enable, gpio.c
+	Our chips have 35 gpio pins.
+	The first 18 pins can interrupt and wakeup.
+	The last 17 pins only can wakeup cannot interrupt. 
+
+5)------------------------------------------------------------------
+	OTA: new control flow for OTA data
+
+6)------------------------------------------------------------------
+	update hci.h, add the function prototype of PPLUS new HCI:
+  	hciStatus_t HCI_PPLUS_AdvEventDoneNoticeCmd( uint8 taskID, uint16 taskEvent );
+  	hciStatus_t HCI_PPLUS_ConnEventDoneNoticeCmd( uint8 taskID, uint16 taskEvent );
+  	hciStatus_t HCI_PPLUS_ExtendTRXCmd( uint8 enable );
+
+
+=======================================================================
+version: PHY62XX_SDK_1.1.6
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.6
+
+升级内容:
+1)------------------------------------------------------------------
+	1.更新spi驱动，新增基于gd25q16的spiflash驱动和示例。
+	2.新增gpio配置为按键的驱动代码，支持短按和长按，建议选取支持中断功能的IO，比如P00~P07、P09~P17。
+	3.新增watchdog驱动代码，支持看门狗打开和关闭，支持中断模式和轮循模式，
+		中断模式看门狗复位周期接近4秒(3.99993896484375)，轮循模式看门狗复位周期接近2秒(1.999969482421875)。
+
+2)------------------------------------------------------------------
+	1.added chipId and chipMAddr(BLE MAC Addr) check APIs
+	2.secure ota bootloader support IV and chipId mode
+	3.add pplus_LoadMACFromChipMAddr to used the chipMacAddr as the ble MAC
+	4.make OTA support multi configure matrix(CFG_FLASH,USE_FCT,CFG_OTA_BANK_MODE)
+
+3)------------------------------------------------------------------
+	add function: pplus_enter_programming_mode force system enter to programing mode P9 & P10 as Tx and Rx
+	default max 2 bounding device
+	add sample: HID for keyboard
+
+4)------------------------------------------------------------------
+	1.add soft reset in common.c
+	2. add rf_phy_dtm_ext_* api
+	3. add simple_rfphy_dtm_ext_demo in iBeacon/Source/main.c
+	4. corrected the IRQ priority setting in all proj/main.c 
+  		NVIC_SetPriority((IRQn_Type)CP_TIMER_IRQ, IRQ_PRIO_HIGH);
+ 		(TIMER_IRQ replace by CP_TIMER_IRQ)
+	5.add rf_phy_dtm_ext_rx_demod api
+	6.fix disconnect issue when slave latency enable
+	7.slave latency bug fixed & performance improvement
+	8.add sleep time margin to avoid RTC comparator failure in some scenarios
+
+
+=======================================================================
+version: PHY62XX_SDK_1.1.7
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.7
+
+升级内容：
+1)------------------------------------------------------------------
+	1.add ap timer demo and wathdog demo.
+	2.add ap timer and watchdog directory in all projects.
+	3.modify jump_table.c and recompile all projects.
+	4.delete some temp file in gpio demo and spiflash demo.
+	5.update spi driver and its demo project spiflash. test spi module in spiflash project,ok.
+	6.add 120*120 TFT driver sample
+
+2)------------------------------------------------------------------ 
+	1.force ADC interrupt priority at IRQ_PRIO_HAL
+	2.remove blocking loop in IRQ handler
+	3.fix bug of adc diff mode sample
+	4.update adc_demo code(add batt mode),you can use P11/P12/P13 on 32pin chip
+3)------------------------------------------------------------------ 
+	1.add patch complied time and date in patch.c
+	2.fix error when big size file OTA load with encrypt
+	3.ota bootloader upgrade
+	5.update OTA hex: 
+	  fix OTA write error when no crypt,if the OTA has no encryption ,it will omit a word when writing partition data  
+4)------------------------------------------------------------------ 
+	1. add scan requeset filter APIs in path.c and ll.h
+ 	LL_PLUS_ScanRequestFilterCBack
+ 	LL_PLUS_SetScanRsqDataByIndex
+ 	LL_PLUS_SetScanRequestFilterCB
+ 	LL_PLUS_GetScanRequestExtendData
+ 	2.disable slave latency next conn interval when receives no empty packet
+
+
+=======================================================================
+version: PHY62XX_SDK_1.1.8
+SVN location:
+PrimeSDK/Tags/PHY62XX_SDK_1.1.8
+
+升级内容：
+------------------------------------------------------------------
+	[lib]
+	1.rflib
+		-add LL_PLUS_GetScanerAddr api
+		-add LL_PLUS_GetCurrentRSSI api 
+		-improve rtc_counter tracking algorithm
+		-imporve rf connectivity for HCLK=SYS_CLK_DLL_48M 
+		-imporve rc32k calibration 
+	
+	2. add font library
+------------------------------------------------------------------
+	[component]
+	
+	1.ap_timer:
+		-optimize ap timer driver code making it use easily.
+	
+	2.spi:
+		-optimize spi code struct,enable basic logic multiplexing.
+	
+	3.fs:
+		-disable fs write and fs erase if in interrupt.
+		-optimize fs algorithm about MF file when file searching.
+		-enable file item length config,16Byte(default),32Byte or 64Byte.
+	
+	4.OTA:
+		-OTA bootloader upgrade from v116, last word of each partition will lost, 
+		 	fix method: change sct file and add dummy data to fix the issue
+		-fix OTA write error when no encryption,
+		 if the OTA has no encryption ,it will omit a word when writing partition data
+		-support resource OTA
+	
+	5.Kscan:
+		-change Key Scan mode as: chip do not got to sleep when someone press
+		-add reScan mode ,when timeout handle.add flag: reScan_flag
+	
+	6.Voice:
+		-modify voice IRQ level
+		-support low power mode
+	
+	7.Profile:
+		-add hid voice service
+		-add hid voice profile
+		-add hid scanparamservice
+
+------------------------------------------------------------------
+	[example]
+	1.ble_peripheral/wrist_aptm:
+		-new add prj osal timer and ap timer co-work 
+	
+	2.ble_peripheral/HIDAdvRemote:
+		-add HIDAdvRemote project.
+		-support voice mode 
+		-support keyScan and matrix key
+		-support LowPower mode.
+	
+	3.ble_peripheral/wechat
+		-add wechat airsync example
+
+	4.peripheral/ap_timer
+		- updated base on new ap timer driver
+
+	5.peripheral/fs
+		- updated base on new ap timer driver
+	
+	6.peripheral/watchdog
+		- updated base on new ap timer driver
+
+	7.peripheral/kscan
+		-set default evk as 48pin 
