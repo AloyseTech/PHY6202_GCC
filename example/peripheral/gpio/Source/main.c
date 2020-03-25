@@ -63,6 +63,8 @@ static void rf_wakeup_handler(void)
 
 void hal_init(void)
 {
+    LOG("hal_init\n");
+
     hal_system_init(g_system_clk);
 
     hal_pwrmgr_RAM_retention(RET_SRAM0 | RET_SRAM1 | RET_SRAM2 | RET_SRAM3 | RET_SRAM4);
@@ -80,6 +82,7 @@ void hal_init(void)
 
 static void hal_rfphy_init(void)
 {
+    LOG("hal_rfphy_init\n");
     //============config the txPower
     g_rfPhyTxPower = RF_PHY_TX_POWER_0DBM;
     //============config BLE_PHY TYPE
@@ -111,6 +114,7 @@ static void hal_rfphy_init(void)
 }
 int main(void)
 {
+    LOG("main\n");
     // init global configuration of SOC
 #ifdef __GNUC__
     int rrn = __builtin_return_address(0);
@@ -125,7 +129,7 @@ int main(void)
     hal_rfphy_init();
 
     hal_init();
-    LOG("%x\n", rrn);
+    LOG("rrn = 0x%x\n", rrn);
 
     app_main();
 }

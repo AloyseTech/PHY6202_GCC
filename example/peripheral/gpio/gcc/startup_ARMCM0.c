@@ -86,16 +86,29 @@ void SVC_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
-void Interrupt0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt2_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt3_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt4_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt5_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt6_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt7_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt8_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt9_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void WDT_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void RTC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void TIM0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void TIM2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void MCIA_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void MCIB_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void UART0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void UART1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void UART2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void UART3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void UART4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void AACI_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void CLCD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void ENET_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void USBDC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void USBHC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void CHLCD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void FLEXRAY_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void CAN_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void LIN_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void I2C_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void CPU_CLCD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void SPI_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
@@ -120,17 +133,29 @@ const pFunc __Vectors[48] __attribute__((used, section(".vectors"))) = {
     SysTick_Handler,      /*  -1 SysTick Handler */
 
     /* Interrupts */
-    Interrupt0_Handler, /*   0 Interrupt 0 */
-    Interrupt1_Handler, /*   1 Interrupt 1 */
-    Interrupt2_Handler, /*   2 Interrupt 2 */
-    Interrupt3_Handler, /*   3 Interrupt 3 */
-    Interrupt4_Handler, /*   4 Interrupt 4 */
-    Interrupt5_Handler, /*   5 Interrupt 5 */
-    Interrupt6_Handler, /*   6 Interrupt 6 */
-    Interrupt7_Handler, /*   7 Interrupt 7 */
-    Interrupt8_Handler, /*   8 Interrupt 8 */
-    Interrupt9_Handler  /*   9 Interrupt 9 */
-                        /* Interrupts 10 .. 31 are left out */
+    WDT_IRQHandler,   /*   0 Interrupt 0 */
+    RTC_IRQHandler,   /*   1 Interrupt 1 */
+    TIM0_IRQHandler,  /*   2 Interrupt 2 */
+    TIM2_IRQHandler,  /*   3 Interrupt 3 */
+    MCIA_IRQHandler,  /*   4 Interrupt 4 */
+    MCIB_IRQHandler,  /*   5 Interrupt 5 */
+    UART0_IRQHandler, /*   6 Interrupt 6 */
+    UART1_IRQHandler, /*   7 Interrupt 7 */
+    UART2_IRQHandler, /*   8 Interrupt 8 */
+    UART3_IRQHandler, /*   9 Interrupt 9 */
+    UART4_IRQHandler, /*   10 Interrupt 10 */
+    AACI_IRQHandler,  /*   10 Interrupt 10 */
+    CLCD_IRQHandler,
+    ENET_IRQHandler,
+    USBDC_IRQHandler,
+    USBHC_IRQHandler,
+    CHLCD_IRQHandler,
+    FLEXRAY_IRQHandler,
+    CAN_IRQHandler,
+    LIN_IRQHandler,
+    I2C_IRQHandler,
+    CPU_CLCD_IRQHandler,
+    SPI_IRQHandler,
 };
 
 /*----------------------------------------------------------------------------
@@ -259,5 +284,7 @@ void _exit(int status)
         ;
 }
 
-// ROM lib need __initial_sp symbol
-const pFunc __initial_sp = (pFunc)(&__StackTop);
+// ROM lib expect __initial_sp symbol to be defined
+// Either add the following line
+// const pFunc __initial_sp = (pFunc)(&__StackTop);
+// or provide __initial_sp in the linker

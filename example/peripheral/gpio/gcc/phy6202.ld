@@ -1,8 +1,13 @@
 /* Linker script to configure memory regions. */
 MEMORY
 {
-  FLASH (rx)  : ORIGIN = 0x00000000, LENGTH = 512K
-  RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 256K
+  /* In mirror mode, flash content is copied to RAM and progrm execute in RAM */
+  FLASH (rx)  : ORIGIN = 0x1FFF4000, LENGTH = 64K /*Mirror mode : flash is copied to RAM for execution*/
+  RAM   (rwx) : ORIGIN = 0x20004000, LENGTH = 48K
+
+  JUMP_TABLE (rwx)       : ORIGIN = 0x1FFF0800, LENGTH = 1K
+  GLOBAL_CONFIG (rwx)    : ORIGIN = 0x1FFF0C00, LENGTH = 1K
+  
 }
 
 
@@ -40,6 +45,19 @@ ENTRY(Reset_Handler)
 
 SECTIONS
 {
+        /* Store jump table between ROM/lib and code at a fixed address */
+        .jump_table_mem_area :
+        {
+                KEEP(*(.jump_table_mem_area))
+        } > JUMP_TABLE
+
+        /* Store global config at a fixed address */
+        .global_config_area :
+        {
+                KEEP(*(.global_config_area))
+        } > GLOBAL_CONFIG
+
+
         .text :
         {
                 KEEP(*(.vectors))
@@ -180,10 +198,11 @@ SECTIONS
 
         /* Set stack top to end of RAM, and stack limit move down by
          * size of stack_dummy section */
+        __initial_sp = ORIGIN(RAM) + LENGTH(RAM);
         __StackTop = ORIGIN(RAM) + LENGTH(RAM);
         __StackLimit = __StackTop - SIZEOF(.stack_dummy);
         PROVIDE(__stack = __StackTop);
-
+        
         /* Check if data + heap + stack exceeds RAM limit */
         ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
 }
