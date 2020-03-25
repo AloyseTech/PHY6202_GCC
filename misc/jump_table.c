@@ -67,8 +67,10 @@
 
 static void hard_fault(void)
 {
-	unsigned int cur_sp = __current_sp();
-  LOG("Hard Fault SP is %x\n",cur_sp);
+	//unsigned int cur_sp = __current_sp();
+	unsigned int* p = NULL;
+	unsigned int cur_sp = (unsigned int)((unsigned int*)&p);
+  LOG("Hard Fault SP is %x\n", cur_sp);
 	for(int i = 0; i< 0x10; i++){
 	 LOG("0x%x,", ((uint32_t*)cur_sp)[i]);
 	}
