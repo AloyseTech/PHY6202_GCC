@@ -50,13 +50,15 @@ extern uint32_t __StackTop;
   Exception / Interrupt Handler Function Prototype
  *----------------------------------------------------------------------------*/
 typedef void (*pFunc)(void);
+extern const uint32_t *const jump_table_base[256];
+extern uint32_t global_config[256];
 
 /*----------------------------------------------------------------------------
   External References
  *----------------------------------------------------------------------------*/
 extern void _start(void) __attribute__((noreturn)); /* PreeMain (C library entry point) */
-extern const uint32_t *const jump_table_base[256];
-extern uint32_t global_config[256];
+// extern const uint32_t *const jump_table_base[256];
+// extern uint32_t global_config[256];
 
 /*----------------------------------------------------------------------------
   Internal References
@@ -171,15 +173,9 @@ void Reset_Handler(void)
     uint32_t *pSrc, *pDest;
     uint32_t *pTable __attribute__((unused));
 
-    /* Tested OK */
-    // while (1)
-    // {
-    //     hal_gpio_toggle(GPIO_P14);
-    // }
-
     SystemInit(); /* CMSIS System Initialization */
 
-    /* Firstly it copies data from read only memory to RAM.
+/* Firstly it copies data from read only memory to RAM.
  * There are two schemes to copy. One can copy more than one sections.
  * Another can copy only one section. The former scheme needs more
  * instructions and read-only data to implement than the latter.
@@ -278,8 +274,7 @@ void Reset_Handler(void)
     //     hal_gpio_toggle(GPIO_P14);
     // }
 
-    // (void)jump_table_base;
-    // (void)global_config;
+    // Avoid optimizating out the jump_table and global_config
     // The following lines crash
     // volatile uint32_t *t1 = jump_table_base[0];
     // volatile uint32_t t2 = global_config[0];
@@ -292,15 +287,15 @@ void Reset_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
+    BM_SET(REG_FMUX_EN_FUC(GPIO_P14), Bit_DISABLE); //set bit
+    BM_SET(reg_gpio_ioe_porta, OEN);
     while (1)
     {
-        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
-        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
-        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
-        BM_CLR(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        //Toggle GPIO 2/3 PWM
+        BM_SET(reg_gpio_swporta_dr, GPIO_P14);
+        BM_SET(reg_gpio_swporta_dr, GPIO_P14);
+        BM_CLR(reg_gpio_swporta_dr, GPIO_P14);
     }
-    while (1)
-        ;
 }
 
 /*----------------------------------------------------------------------------

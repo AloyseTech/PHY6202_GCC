@@ -86,10 +86,16 @@ void SystemCoreClockUpdate(void)
 
 void SystemInit(void)
 {
-    //set pin 14 as output for debug
-    hal_gpio_pin_init(GPIO_P14, OEN);
-    //Initially set it high to ensure pin setup works
-    hal_gpio_write(GPIO_P14, 1);
+    /* Tested OK */
+    // Set GPIO14 as output
+    BM_SET(REG_FMUX_EN_FUC(GPIO_P14), Bit_DISABLE);
+    BM_SET(reg_gpio_ioe_porta, OEN);
+    while (1)
+    {
+        //Toggle GPIO
+        BM_SET(reg_gpio_swporta_dr, GPIO_P14);
+        BM_CLR(reg_gpio_swporta_dr, GPIO_P14);
+    }
 
     SystemCoreClock = SYSTEM_CLOCK;
 }

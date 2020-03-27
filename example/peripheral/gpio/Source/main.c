@@ -151,13 +151,13 @@ int main(void)
     LOG("Test call OK\n");
 
     //Cause Hardfault to test HardFault_Handler
-    void (*fp)(void) = (void (*)(void))(0x00000000);
-    fp();
+    // void (*fp)(void) = (void (*)(void))(0x00000000);
+    // fp();
 
-    while (1)
-    {
-        hal_gpio_toggle(GPIO_P14);
-    }
+    // while (1)
+    // {
+    //     hal_gpio_toggle(GPIO_P14);
+    // }
 
     //this function crash
     init_config();

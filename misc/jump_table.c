@@ -93,59 +93,63 @@ static void hard_fault(void)
 // item 1 - 4 for OSAL task entry
 // item 224 - 255 for ISR(Interrupt Service Routine) entry
 // others are reserved by ROM code
+#ifdef __GNUC__
+const uint32_t *const jump_table_base[256] __attribute__((section(".jump_table_mem_area"))) __attribute__((used)) =
+#else
 const uint32_t* const jump_table_base[256] __attribute__((section("jump_table_mem_area"))) __attribute__((used)) =
-{
-	(const uint32_t*)0,                         // 0. write Log
-	(const uint32_t*)osalInitTasks,             // 1. init entry of app
-	(const uint32_t*)tasksArr,                  // 2. task list
-	(const uint32_t*)&tasksCnt,                 // 3. task count
-	(const uint32_t*)&tasksEvents,              // 4. task events
-    0, 0, 0, 0, 0,                              // 5 - 9, reserved by phyplus	
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 10 - 19, reserved by phyplus	
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 20 - 29, reserved by phyplus	
-    0, 0, 0, 0, 0, 0, 0, 0,                     // <30 - - 37>
-    0, 0,
-	0, 0, 0, 0, 0, 0, //40 - 45
-    0, 0, 0, 0,                                 //46 - 49        
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 50 - 59, reserved by phyplus
-    0,   // < 60 -
-    0,                            
-	0, 
-    0, 
-	0, 0, 0, 0, 0, 0,                           //  -69>, reserved by phyplus
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 70 -79, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 80 - 89, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 90 - 99, reserved by phyplus
-	(const uint32_t*)hal_pwrmgr_sleep_process,         // <100 -
-	(const uint32_t*)hal_pwrmgr_wakeup_process,
-    (const uint32_t*)rf_phy_ini,                
-   0, 
-	0,		
-    0,
-	0, 0, 0, 0,                       // - 109, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 110 -119, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 120 -129, reserved by phyplus
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 130 -139, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 140 -149, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 150 -159, reserved by phyplus
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 160 -169, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 170 -179, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 180 -189, reserved by phyplus
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 190 -199, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 200 - 209, reserved by phyplus
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     // 210 - 219, reserved by phyplus
-    (const uint32_t*)hard_fault, 0, 0, 0, 0, 0, (const uint32_t*)TIM0_IRQHandler1, 0,           // 220 - 227
-    0, 
-		(const uint32_t*)hal_KSCAN_IRQHandler,       // 228 - 229
-    0, 0, 0, (const uint32_t*)AP_TIMER_IRQHandler, 0,  // 230 - 234       
-    (const uint32_t*)hal_UART0_IRQHandler,      // 235 uart irq handler
-		(const uint32_t*)hal_I2C0_IRQHandler,
-		(const uint32_t*)hal_I2C1_IRQHandler,
-		(const uint32_t*)hal_SPI0_IRQHandler, 
-		(const uint32_t*)hal_SPI1_IRQHandler,     // 236 - 239
-    (const uint32_t*)hal_GPIO_IRQHandler, //240 gpio interrupt handler
-    0, 0, 0, 0, 0, 0, 0, 0, 0,     // 241 - 249, for ISR entry
-    0, 0, 0, (const uint32_t*)hal_ADC_IRQHandler, 0, 0                  // 250 - 255, for ISR entry
+#endif
+    {
+        (const uint32_t *)0,             // 0. write Log
+        (const uint32_t *)osalInitTasks, // 1. init entry of app
+        (const uint32_t *)tasksArr,      // 2. task list
+        (const uint32_t *)&tasksCnt,     // 3. task count
+        (const uint32_t *)&tasksEvents,  // 4. task events
+        0, 0, 0, 0, 0,                   // 5 - 9, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    // 10 - 19, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    // 20 - 29, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0,          // <30 - - 37>
+        0, 0,
+        0, 0, 0, 0, 0, 0,             //40 - 45
+        0, 0, 0, 0,                   //46 - 49
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 50 - 59, reserved by phyplus
+        0,                            // < 60 -
+        0,
+        0,
+        0,
+        0, 0, 0, 0, 0, 0,                           //  -69>, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 70 -79, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 80 - 89, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,               // 90 - 99, reserved by phyplus
+        (const uint32_t *)hal_pwrmgr_sleep_process, // <100 -
+        (const uint32_t *)hal_pwrmgr_wakeup_process,
+        (const uint32_t *)rf_phy_ini,
+        0,
+        0,
+        0,
+        0, 0, 0, 0,                                                                         // - 109, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 110 -119, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 120 -129, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 130 -139, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 140 -149, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 150 -159, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 160 -169, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 170 -179, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 180 -189, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 190 -199, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 200 - 209, reserved by phyplus
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                       // 210 - 219, reserved by phyplus
+        (const uint32_t *)hard_fault, 0, 0, 0, 0, 0, (const uint32_t *)TIM0_IRQHandler1, 0, // 220 - 227
+        0,
+        (const uint32_t *)hal_KSCAN_IRQHandler,            // 228 - 229
+        0, 0, 0, (const uint32_t *)AP_TIMER_IRQHandler, 0, // 230 - 234
+        (const uint32_t *)hal_UART0_IRQHandler,            // 235 uart irq handler
+        (const uint32_t *)hal_I2C0_IRQHandler,
+        (const uint32_t *)hal_I2C1_IRQHandler,
+        (const uint32_t *)hal_SPI0_IRQHandler,
+        (const uint32_t *)hal_SPI1_IRQHandler,              // 236 - 239
+        (const uint32_t *)hal_GPIO_IRQHandler,              //240 gpio interrupt handler
+        0, 0, 0, 0, 0, 0, 0, 0, 0,                          // 241 - 249, for ISR entry
+        0, 0, 0, (const uint32_t *)hal_ADC_IRQHandler, 0, 0 // 250 - 255, for ISR entry
 };
 
 
@@ -163,7 +167,10 @@ const uint32_t* const jump_table_base[256] __attribute__((section("jump_table_me
 /*********************************************************************
  * EXTERNAL VARIABLES
  */
+#ifdef __GNUC__
+uint32 global_config[SOFT_PARAMETER_NUM] __attribute__((section(".global_config_area"))) __attribute__((used));
+#else
 uint32 global_config[SOFT_PARAMETER_NUM] __attribute__((section("global_config_area"))) __attribute__((used));
-
+#endif
 
 
