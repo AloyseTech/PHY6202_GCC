@@ -67,6 +67,13 @@
 
 static void hard_fault(void)
 {
+	while (1)
+    {
+        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_CLR(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_CLR(reg_gpio_swporta_dr, BIT(GPIO_P14));
+    }
+		
 	//unsigned int cur_sp = __current_sp();
 	unsigned int* p = NULL;
 	unsigned int cur_sp = (unsigned int)((unsigned int*)&p);
@@ -86,7 +93,7 @@ static void hard_fault(void)
 // item 1 - 4 for OSAL task entry
 // item 224 - 255 for ISR(Interrupt Service Routine) entry
 // others are reserved by ROM code
-const uint32_t* const jump_table_base[256] __attribute__((section("jump_table_mem_area"))) =
+const uint32_t* const jump_table_base[256] __attribute__((section("jump_table_mem_area"))) __attribute__((used)) =
 {
 	(const uint32_t*)0,                         // 0. write Log
 	(const uint32_t*)osalInitTasks,             // 1. init entry of app
@@ -156,7 +163,7 @@ const uint32_t* const jump_table_base[256] __attribute__((section("jump_table_me
 /*********************************************************************
  * EXTERNAL VARIABLES
  */
-uint32 global_config[SOFT_PARAMETER_NUM] __attribute__((section("global_config_area")));
+uint32 global_config[SOFT_PARAMETER_NUM] __attribute__((section("global_config_area"))) __attribute__((used));
 
 
 

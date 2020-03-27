@@ -55,6 +55,17 @@ extern void init_config(void);
 
 extern uint32_t pclk;
 
+void HardFault_Handler(void)
+{
+    while (1)
+    {
+        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_CLR(reg_gpio_swporta_dr, BIT(GPIO_P14));
+    }
+    while (1)
+        ;
+}
+
 static void rf_wakeup_handler(void)
 {
     NVIC_SetPriority((IRQn_Type)BB_IRQ, IRQ_PRIO_REALTIME);
@@ -112,9 +123,16 @@ static void hal_rfphy_init(void)
 
     hal_pwrmgr_register(MOD_USR0, NULL, rf_wakeup_handler);
 }
+
+void test_print()
+{
+    LOG("test func call\n");
+}
+
 int main(void)
 {
-    LOG("main\n");
+    LOG("\nmain\n");
+
     // init global configuration of SOC
 #ifdef __GNUC__
     int rrn = __builtin_return_address(0);
@@ -123,7 +141,35 @@ int main(void)
 #endif
     g_system_clk = SYS_CLK_DLL_48M;
 
+    /* Tested OK */
+    // while (1)
+    // {
+    //     hal_gpio_toggle(GPIO_P14);
+    // }
+
+    test_print();
+    LOG("Test call OK\n");
+
+    //Cause Hardfault to test HardFault_Handler
+    void (*fp)(void) = (void (*)(void))(0x00000000);
+    fp();
+
+    while (1)
+    {
+        hal_gpio_toggle(GPIO_P14);
+    }
+
+    //this function crash
     init_config();
+
+    LOG("Init config done\n");
+
+    /* Tested NOK */
+    while (1)
+    {
+        hal_gpio_toggle(GPIO_P14);
+    }
+
     hal_pwrmgr_init();
 
     hal_rfphy_init();

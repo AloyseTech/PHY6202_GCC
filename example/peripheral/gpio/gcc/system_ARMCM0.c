@@ -30,7 +30,7 @@
   
 **************************************************************************************************/
 
-/**************************************************************************//**
+/**************************************************************************/ /**
  * @file     system_ARMCM0.c
  * @brief    CMSIS Device System Source File for
  *           ARMCM0 Device Series
@@ -64,30 +64,32 @@
    POSSIBILITY OF SUCH DAMAGE.
    ---------------------------------------------------------------------------*/
 
-
 #include "ARMCM0.h"
+#include "gpio.h"
 
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define  XTAL            ( 5000000U)      /* Oscillator frequency             */
+#define XTAL (5000000U) /* Oscillator frequency             */
 
-#define  SYSTEM_CLOCK    (5 * XTAL)
-
+#define SYSTEM_CLOCK (5 * XTAL)
 
 /*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock = SYSTEM_CLOCK;  /* System Core Clock Frequency      */
+uint32_t SystemCoreClock = SYSTEM_CLOCK; /* System Core Clock Frequency      */
 
-
-void SystemCoreClockUpdate (void)
+void SystemCoreClockUpdate(void)
 {
-  SystemCoreClock = SYSTEM_CLOCK;
+    SystemCoreClock = SYSTEM_CLOCK;
 }
 
-void SystemInit (void)
+void SystemInit(void)
 {
+    //set pin 14 as output for debug
+    hal_gpio_pin_init(GPIO_P14, OEN);
+    //Initially set it high to ensure pin setup works
+    hal_gpio_write(GPIO_P14, 1);
 
-  SystemCoreClock = SYSTEM_CLOCK;
+    SystemCoreClock = SYSTEM_CLOCK;
 }

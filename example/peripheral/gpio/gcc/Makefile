@@ -75,7 +75,7 @@ SRCS += \
   ../Source/OSAL_gpio.c \
   ./system_ARMCM0.c \
   ./startup_ARMCM0.c
-#  $(SDK_PATH)/components/driver/log/my_printf.c is included in ROM or lib ?
+#  $(SDK_PATH)/components/driver/log/my_printf.c is included in rf.lib
 
 DEFINES += \
   -DCFG_CP \

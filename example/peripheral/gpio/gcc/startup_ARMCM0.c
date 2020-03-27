@@ -28,6 +28,7 @@
 */
 
 #include "ARMCM0.h"
+#include "gpio.h"
 
 /*----------------------------------------------------------------------------
   Linker generated Symbols
@@ -43,6 +44,8 @@ extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
 extern uint32_t __StackTop;
 
+#define __STARTUP_CLEAR_BSS
+
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler Function Prototype
  *----------------------------------------------------------------------------*/
@@ -52,6 +55,8 @@ typedef void (*pFunc)(void);
   External References
  *----------------------------------------------------------------------------*/
 extern void _start(void) __attribute__((noreturn)); /* PreeMain (C library entry point) */
+extern const uint32_t *const jump_table_base[256];
+extern uint32_t global_config[256];
 
 /*----------------------------------------------------------------------------
   Internal References
@@ -166,6 +171,12 @@ void Reset_Handler(void)
     uint32_t *pSrc, *pDest;
     uint32_t *pTable __attribute__((unused));
 
+    /* Tested OK */
+    // while (1)
+    // {
+    //     hal_gpio_toggle(GPIO_P14);
+    // }
+
     SystemInit(); /* CMSIS System Initialization */
 
     /* Firstly it copies data from read only memory to RAM.
@@ -261,6 +272,18 @@ void Reset_Handler(void)
     }
 #endif /* __STARTUP_CLEAR_BSS_MULTIPLE || __STARTUP_CLEAR_BSS */
 
+    /* Tested OK */
+    // while (1)
+    // {
+    //     hal_gpio_toggle(GPIO_P14);
+    // }
+
+    // (void)jump_table_base;
+    // (void)global_config;
+    // The following lines crash
+    // volatile uint32_t *t1 = jump_table_base[0];
+    // volatile uint32_t t2 = global_config[0];
+
     _start(); /* Enter PreeMain (C library entry point) */
 }
 
@@ -269,7 +292,13 @@ void Reset_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
-
+    while (1)
+    {
+        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_SET(reg_gpio_swporta_dr, BIT(GPIO_P14));
+        BM_CLR(reg_gpio_swporta_dr, BIT(GPIO_P14));
+    }
     while (1)
         ;
 }
